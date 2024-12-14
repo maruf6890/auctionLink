@@ -44,7 +44,11 @@
     font-weight: 900;
     font-style: normal;
   }
-  
+.auction-image{
+background-image: url(https://media.istockphoto.com/id/540383298/vector/football-championship-background.jpg?s=612x612&w=0&k=20&c=Fr9lnjEjVDX7VU1yEpnb7F5mR3THYswQtiAmG_aX3tU=);
+background-repeat: none;
+background-size: cover;
+}
 #header-logo-text{
     background: -webkit-linear-gradient(#306bac, #013a61);
     -webkit-background-clip: text;

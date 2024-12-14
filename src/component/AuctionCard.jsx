@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import CountdownTimer from "./CountdownTimer";
 import { Link } from "react-router";
 import { IoCreateOutline } from "react-icons/io5";
@@ -11,6 +11,7 @@ import { format } from "date-fns";
 import databaseService from "../Apprwite/database";
 import conf from "../config/conf";
 import AuthContext from "../Apprwite/AuthProvider";
+import { Query } from "appwrite";
 
 
 
@@ -35,6 +36,7 @@ export default function AuctionCard({ auction }) {
   const playerAuctionTime = format(new Date(auction.player_auction_date), "MMMM dd, yyyy");
 
   //
+
   const managerData={
     auction_id: auction.$id,
     name:user.name,
@@ -55,10 +57,63 @@ export default function AuctionCard({ auction }) {
       } catch (error) {
         console.error("Error creating team:", error);
         setError("Failed to create team. Please try again.");
-      } 
+      }
+      
+      
+     
   
   
   }
+
+  
+   const [teamAuctionQueue,setTeamAuctionQueue]= useState([]);
+   //if(auction.application_done){
+     const myQueryes=[
+       Query.equal("auction_id",auction.$id)
+     ];
+     useEffect(()=>{
+      const fetchTeamQueue= async() =>{
+        try {
+          const data= await databaseService.getDocuments(conf.appwriteTeamId,myQueryes);
+          setTeamAuctionQueue(data);
+          console.log("Get Team auction queue")
+        } catch (error) {
+          console.log("failled to fetch team auction queue error: ",error);
+        }
+      }
+       fetchTeamQueue();
+     },[conf.appwriteTeamId,auction.$id]);
+    // console.log(teamAuctionQueue);
+     const team_acction_queue=[];
+     teamAuctionQueue.map(element=> team_acction_queue.push(element.$id));
+     
+     useEffect(() => {
+        const UpdatableObject = {
+          current_team_index:0,
+          team_queue_id: team_acction_queue,
+          total_team:team_acction_queue.length,
+        };
+  
+        const updateQueue = async () => {
+          try {
+            await databaseService.updateDocument(
+              conf.appwriteAuctionId,
+              auction.$id,          
+              UpdatableObject      
+            );
+            console.log("Auction queue successfully updated.");
+          } catch (error) {
+            console.error("Failed to update auction queue:", error.message);
+          }
+        };
+  
+        updateQueue();
+      
+    }, [teamAuctionQueue, auction]);
+     
+  // }
+   
+  
   return (
     <div className="my-10 p-5 shadow-md bg-white border rounded-sm">
       {/* Auction Header */}
@@ -89,7 +144,7 @@ export default function AuctionCard({ auction }) {
           className="w-full h-96 object-cover rounded"
         />
       </div>
-
+    
       {/* Auction Details */}
       <div className="auction-body">
         <div className="bg-base-200 collapse-open ">
@@ -133,13 +188,18 @@ export default function AuctionCard({ auction }) {
                 <CountdownTimer deadlineDate={auction.team_auction_date} />
               ) : (
                 <Link
-                  to={`/auction/${auction.$id}/auction_screen`}
+                  to={`/auction/${auction.$id}/auction_screen/${team_acction_queue[auction.current_team_index]}`}
                   className="btn text-white theme-btn bg-gradient-to-r from-cyan-500 to-blue-500 rounded-md text-lg uppercase"
                 >
                   Team Auction
                 </Link>
               )}
-
+              <Link
+                  to={`/auction/${auction.$id}/team_auction_screen/${team_acction_queue[(auction.current_team_index==null)? 0: auction.current_team_index]}`}
+                  className="btn text-white theme-btn bg-gradient-to-r from-cyan-500 to-blue-500 rounded-md text-lg uppercase"
+                >
+                  Team Auction
+                </Link>
               {/* Player Auction */}
               <p className="my-5">Player Auction Date: {playerAuctionTime}</p>
               {!isDeadlineOver(auction.player_auction_date) ? (

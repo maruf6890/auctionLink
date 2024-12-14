@@ -7,11 +7,11 @@ class DatabaseService {
 
     constructor() {
         this.client
-            .setEndpoint(conf.appwriteUrl)  // Appwrite URL
-            .setProject(conf.appwriteProjectId);  // Appwrite Project ID
+            .setEndpoint(conf.appwriteUrl)
+            .setProject(conf.appwriteProjectId);
 
         this.databases = new Databases(this.client);
-        this.databaseId = conf.appwriteDatabaseId;  // Centralized Database ID
+        this.databaseId = conf.appwriteDatabaseId;
     }
 
     // Create a document
@@ -20,13 +20,13 @@ class DatabaseService {
             const document = await this.databases.createDocument(
                 this.databaseId,
                 collectionId,
-                ID.unique(),  // Auto-generate unique document ID
+                ID.unique(),
                 data
             );
             console.log("Document created:", document);
             return document;
         } catch (error) {
-            console.error("Error creating document:", error);
+            console.error("Error creating document:", error.message);
             throw error;
         }
     }
@@ -35,29 +35,30 @@ class DatabaseService {
     async getDocument(collectionId, documentId) {
         try {
             const document = await this.databases.getDocument(
-                this.databaseId,  // Centralized databaseId
+                this.databaseId,
                 collectionId,
                 documentId
             );
             console.log("Document retrieved:", document);
             return document;
         } catch (error) {
-            console.error("Error retrieving document:", error);
+            console.error("Error retrieving document:", error.message);
             throw error;
         }
     }
 
-    // List all documents in a collection
-    async getDocuments(collectionId) {
+    // List documents with optional queries
+    async getDocuments(collectionId, query = []) {
         try {
             const documents = await this.databases.listDocuments(
-                this.databaseId,  // Centralized databaseId
-                collectionId
+                this.databaseId,
+                collectionId,
+                query
             );
             console.log("Documents retrieved:", documents.documents);
             return documents.documents;
         } catch (error) {
-            console.error("Error listing documents:", error);
+            console.error("Error listing documents:", error.message);
             throw error;
         }
     }
@@ -66,7 +67,7 @@ class DatabaseService {
     async updateDocument(collectionId, documentId, updatedData) {
         try {
             const document = await this.databases.updateDocument(
-                this.databaseId,  // Centralized databaseId
+                this.databaseId,
                 collectionId,
                 documentId,
                 updatedData
@@ -74,7 +75,7 @@ class DatabaseService {
             console.log("Document updated:", document);
             return document;
         } catch (error) {
-            console.error("Error updating document:", error);
+            console.error("Error updating document:", error.message);
             throw error;
         }
     }
@@ -89,7 +90,7 @@ class DatabaseService {
             );
             console.log("Document deleted successfully");
         } catch (error) {
-            console.error("Error deleting document:", error);
+            console.error("Error deleting document:", error.message);
             throw error;
         }
     }
