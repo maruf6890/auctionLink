@@ -51,6 +51,8 @@ export default function SidebarLess() {
           auction_id
         );
         setAuctionData(auctionData);
+        console.log("console auction", auctionData.current_team_index);
+
       } catch (error) {
         console.error("Error fetching auction data:", error.message);
       } finally {
@@ -60,13 +62,16 @@ export default function SidebarLess() {
     fetchAuction();
   }, [auction_id]);
 
-  // Redirect if team is sold or unsold
+  
+  
+
+  /* Redirect if team is sold or unsold
   useEffect(() => {
     if (current_team && (current_team.isUnsold || current_team.is_sold)) {
       navigate("/");
     }
   }, [current_team, navigate]);
-
+*/
   // Update deadline for the first team
   useEffect(() => {
     const updateDeadline = async () => {
@@ -93,7 +98,7 @@ export default function SidebarLess() {
     };
     updateDeadline();
   }, [auctionData, team_id]);
-
+  
   // Calculate remaining time for the timer
 
   const calculateRemainingTime = () => {
@@ -104,6 +109,7 @@ export default function SidebarLess() {
 
     const duration = Math.max(Math.floor((deadline - now) / 1000), 0);
 
+    
     return duration;
   };
 
@@ -176,14 +182,16 @@ export default function SidebarLess() {
     }
 
   }
+ console.log(auctionData, "auction");
+
 
   //next auction or auction over system
-  if (calculateRemainingTime === 0) {
+  if (auctionData && calculateRemainingTime === 0) {
     //define sold /unsold
-    if (current_team.current_price > current_team.min_price) {
-      current_team.is_sold = true;
+    if (current_team?.current_price > current_team?.min_price) {
+      
     } else {
-      current_team.isUnsold = true;
+     
     }
     //end or next auction
     if (auctionData.current_team_index < auctionData.total_team - 1) {
