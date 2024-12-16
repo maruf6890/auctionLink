@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import CountdownTimer from "./CountdownTimer";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { IoCreateOutline } from "react-icons/io5";
 
 import {
@@ -16,26 +16,31 @@ import { Query } from "appwrite";
 
 
 export default function AuctionCard({ auction }) {
-  const {user}=useContext(AuthContext);
-  const [isExpanded, setIsExpanded] = useState(false);
+const {user}=useContext(AuthContext);
 
-  // Helper to check if a deadline is over
-  const isDeadlineOver = (deadlineDate) => {
-    const now = new Date();
-    const deadline = new Date(deadlineDate);
-    return now.getTime() > deadline.getTime();
-  };
+const [isExpanded, setIsExpanded] = useState(false);
 
-  // Toggle collapse content
-  const handleToggle = () => {
-    setIsExpanded((prevState) => !prevState);
-  };
+// Helper to check if a deadline is over
+const isDeadlineOver = (deadlineDate) => {
+const now = new Date();
+const deadline = new Date(deadlineDate);
+return now.getTime() > deadline.getTime();
+};
+
+// Toggle collapse content
+const handleToggle = () => {
+setIsExpanded((prevState) => !prevState);
+};
 
   // Format dates for display
   const teamAuctionTime = format(new Date(auction.team_auction_date), "MMMM dd, yyyy");
   const playerAuctionTime = format(new Date(auction.player_auction_date), "MMMM dd, yyyy");
 
   //
+  const navigate= useNavigate();
+  if(!user){
+    navigate('/login');
+  }
 
   const managerData={
     auction_id: auction.$id,
@@ -43,6 +48,7 @@ export default function AuctionCard({ auction }) {
     email:user.email,
     phone: (user.phone)? user.phone: "0000000000",
   }
+
   console.log(managerData);
   const handleTeamRequest = async()=>{
       try {
@@ -67,6 +73,7 @@ export default function AuctionCard({ auction }) {
 
   
    const [teamAuctionQueue,setTeamAuctionQueue]= useState([]);
+   const [playerAuctionQueue,setPlayerAuctionQueue]= useState([]);
    //if(auction.application_done){
      const myQueryes=[
        Query.equal("auction_id",auction.$id)
@@ -83,13 +90,12 @@ export default function AuctionCard({ auction }) {
       }
        fetchTeamQueue();
      },[conf.appwriteTeamId,auction.$id]);
-    // console.log(teamAuctionQueue);
+  
      const team_acction_queue=[];
      teamAuctionQueue.map(element=> team_acction_queue.push(element.$id));
      
      useEffect(() => {
         const UpdatableObject = {
-          current_team_index:0,
           team_queue_id: team_acction_queue,
           total_team:team_acction_queue.length,
         };
@@ -110,7 +116,47 @@ export default function AuctionCard({ auction }) {
         updateQueue();
       
     }, [teamAuctionQueue, auction]);
-     
+    
+    useEffect(()=>{
+      const fetchPlayerQueue= async() =>{
+        try {
+          const data= await databaseService.getDocuments(conf.appwritePlayerId,myQueryes);
+          setPlayerAuctionQueue(data);
+          console.log("Get Player auction queue")
+        } catch (error) {
+          console.log("failled to fetch team auction queue error: ",error);
+        }
+      }
+       fetchPlayerQueue();
+     },[conf.appwritePlayerId,auction.$id]);
+
+     const player_auction_queue=[];
+     playerAuctionQueue.map(element=> player_auction_queue.push(element.$id));
+     console.log(playerAuctionQueue)
+     useEffect(() => {
+        const UpdatableObject2 = {
+          player_queue_id: player_auction_queue,
+          total_player:player_auction_queue.length,
+        };
+  
+        const updateQueue = async () => {
+          try {
+            await databaseService.updateDocument(
+              conf.appwriteAuctionId,
+              auction.$id,          
+              UpdatableObject2      
+            );
+            console.log("Auction queue successfully updated.");
+          } catch (error) {
+            console.error("Failed to update auction queue:", error.message);
+          }
+        };
+  
+        updateQueue();
+      
+    }, [playerAuctionQueue, auction]);
+   
+
   // }
    
   
@@ -122,14 +168,21 @@ export default function AuctionCard({ auction }) {
         <h4 className="text-3xl font-semibold text-gray-800">{auction.auction_name}</h4>
         <p className="text-sm font-regular">by - {auction.host_organization}</p>
         </div>
-        <div className="">
+        <div className="flex gap-3">
       
       <Link
         className="btn tooltip flex items-center  btn-sm"
         data-tip="Create Team"
         to={`/auction/${auction.$id}/create_team`}
       >
-        Team <IoCreateOutline className="inline" />
+        Team +
+      </Link>
+      <Link
+        className="btn tooltip flex items-center  btn-sm"
+        data-tip="Update Auction"
+        to={`/auction/${auction.$id}/update_auction`}
+      >
+        <IoCreateOutline className="inline" />
       </Link>
   
          </div>
@@ -212,6 +265,12 @@ export default function AuctionCard({ auction }) {
                   Player Auction
                 </Link>
               )}
+              <Link
+                  to={`/auction/${auction.$id}/player_auction_screen/${player_auction_queue[0]}/0`}
+                  className="btn text-white theme-btn bg-gradient-to-r from-cyan-500 to-blue-500 rounded-md text-lg uppercase"
+                >
+                  Player Auction
+                </Link>
 
               {/* Total Teams */}
               <div className="mt-5">

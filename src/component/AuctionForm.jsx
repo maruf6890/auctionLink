@@ -17,7 +17,7 @@ export default function AuctionForm() {
         auction_name: "",
         auction_detail: "",
         host_name:"",
-        host_id: "",
+        host_id: user.$id,
         host_organization: "",
         player_auction_date: "",
         registation_dedline: "",
@@ -83,8 +83,8 @@ export default function AuctionForm() {
     };
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-gray-100">
-            <div className="w-full max-w-md p-8 bg-white shadow-lg rounded-lg">
+        <div className="flex justify-center p-10 -mt-10 items-center min-h-screen bg-gray-100">
+            <div className="w-full  p-8 bg-white shadow-md rounded-md">
                 <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">Create Auction</h2>
                 {error && <div className="mb-4 text-red-500 text-sm">{error}</div>}
                 <form onSubmit={handleSubmit}>
@@ -93,12 +93,13 @@ export default function AuctionForm() {
                             Auction Name
                         </label>
                         <input
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#141B41]"
+              
                             type="text"
                             id="auction_name"
                             name="auction_name"
                             value={auctionData.auction_name}
                             onChange={handleChange}
-                            className="input input-bordered w-full"
                             placeholder="Enter auction name"
                             required
                         />
@@ -113,7 +114,7 @@ export default function AuctionForm() {
                             name="auction_detail"
                             value={auctionData.auction_detail}
                             onChange={handleChange}
-                            className="input input-bordered w-full"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#141B41]"
                             placeholder="Enter auction details"
                         />
                     </div>
@@ -147,7 +148,7 @@ export default function AuctionForm() {
                             name="host_organization"
                             value={auctionData.host_organization}
                             onChange={handleChange}
-                            className="input input-bordered w-full"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#141B41]"
                             placeholder="Host organization"
                         />
                     </div>
@@ -163,7 +164,8 @@ export default function AuctionForm() {
                             name="player_auction_date"
                             value={auctionData.player_auction_date}
                             onChange={handleChange}
-                            className="input input-bordered w-full"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#141B41]"
+              
                         />
                     </div>
 
@@ -177,7 +179,8 @@ export default function AuctionForm() {
                             name="registation_dedline"
                             value={auctionData.registation_dedline}
                             onChange={handleChange}
-                            className="input input-bordered w-full"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#141B41]"
+              
                         />
                     </div>
 
@@ -191,7 +194,8 @@ export default function AuctionForm() {
                             name="team_auction_date"
                             value={auctionData.team_auction_date}
                             onChange={handleChange}
-                            className="input input-bordered w-full"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#141B41]"
+              
                         />
                     </div>
 
@@ -206,29 +210,14 @@ export default function AuctionForm() {
                             name="cover_url"
                             value={auctionData.cover_url}
                             onChange={handleChange}
-                            className="input input-bordered w-full"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#141B41]"
                             placeholder="Enter cover URL"
                         />
                     </div>
 
-                    {/* Total Teams */}
-                    <div className="mb-4">
-                        <label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="total_team">
-                            Total Teams
-                        </label>
-                        <input
-                            type="number"
-                            id="total_team"
-                            name="total_team"
-                            value={auctionData.total_team}
-                            onChange={handleChange}
-                            className="input input-bordered w-full"
-                            placeholder="Enter total number of teams"
-                            min="1" // Optional: Set a minimum value
-                        />
-                    </div>
+                   
 
-                    <button type="submit" className="btn btn-primary w-full">
+                    <button type="submit" className="bg-[#141B41] text-white font-medium py-2 px-6 rounded-lg hover:bg-[#0f1736] transition duration-200">
                         Create Auction
                     </button>
                 </form>

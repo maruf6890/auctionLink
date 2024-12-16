@@ -33,7 +33,7 @@ export default function Header() {
                             <li><a>About</a></li>
                         </ul>
                     </div>
-                    <a  id="header-logo-text" className="btn btn-ghost pl-0  text-3xl ">aucti<MdSportsBasketball></MdSportsBasketball>nLink</a>
+                    <a  id="text-[#141B41]" className=" pl-0  text-3xl ">Auction<span className=' bg-red p-1 border-2 border-slate-500 text-md rounded-sm ml-2'>Link</span></a>
                 </div>
                 <div className="navbar-center">
                     <label className="input input-bordered flex items-center gap-2">

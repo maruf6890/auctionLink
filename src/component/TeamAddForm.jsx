@@ -52,8 +52,8 @@ export default function TeamAddForm() {
     };
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-gray-100">
-            <div className="w-full max-w-md p-8 bg-white shadow-lg rounded-lg">
+        <div className="flex justify-center p-10 -mt-10 items-center min-h-screen bg-gray-100">
+            <div className="w-full  p-8 bg-white shadow-md rounded-lg">
                 <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">Add Team</h2>
                 {error && <div className="mb-4 text-red-500 text-sm">{error}</div>}
                 <form onSubmit={handleSubmit}>
@@ -68,7 +68,7 @@ export default function TeamAddForm() {
                             name="team_name"
                             value={teamData.team_name}
                             onChange={handleChange}
-                            className="input input-bordered w-full"
+                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#141B41]"
                             placeholder="Enter team name"
                             required
                         />
@@ -85,7 +85,7 @@ export default function TeamAddForm() {
                             name="min_price"
                             value={teamData.min_price}
                             onChange={handleChange}
-                            className="input input-bordered w-full"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#141B41]"
                             placeholder="Enter minimum price"
                             min="0"
                             required
@@ -103,7 +103,7 @@ export default function TeamAddForm() {
                             name="logo_image"
                             value={teamData.logo_image}
                             onChange={handleChange}
-                            className="input input-bordered w-full"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#141B41]"
                             placeholder="Enter logo image URL"
                         />
                     </div>
@@ -119,7 +119,7 @@ export default function TeamAddForm() {
                             name="total_player"
                             value={teamData.total_player}
                             onChange={handleChange}
-                            className="input input-bordered w-full"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#141B41]"
                             placeholder="Enter total number of players"
                             min="1"
                             required
@@ -127,7 +127,7 @@ export default function TeamAddForm() {
                     </div>
 
                     {/* Submit Button */}
-                    <button type="submit" className="btn btn-primary w-full">
+                    <button type="submit" className="bg-[#141B41] text-white font-medium py-2 px-6 rounded-lg hover:bg-[#0f1736] transition duration-200">
                         Add Team
                     </button>
                 </form>

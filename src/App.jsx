@@ -2,18 +2,23 @@ import { useEffect, useContext } from 'react';
 import './App.css';
 
 import Header from './component/Header';
-import { Outlet, useNavigate } from 'react-router';
+import { Link, Outlet, useNavigate } from 'react-router';
 import AuthContext from './Apprwite/AuthProvider';
 import { MdEmojiEvents } from "react-icons/md";
 import { GiNewspaper } from "react-icons/gi";
 import { LuTvMinimalPlay } from "react-icons/lu";
+import { IoIosHome } from "react-icons/io";
+import { MdMiscellaneousServices } from "react-icons/md";
+import { BsInfoSquare } from "react-icons/bs";
+import { IoIosMail } from "react-icons/io";
+import Footer from './component/Footer';
 function App() {
   const { user, logout } = useContext(AuthContext); // Access user data and logout function from context
   const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
-    navigate('/login'); 
+    navigate('/login');
   };
 
 
@@ -35,19 +40,54 @@ function App() {
             <label htmlFor="my-drawer-2" aria-label="close sidebar" className="drawer-overlay"></label>
             <ul className="menu bg-[#98B9F2] inter uppercase bold text-semibold text-sm text-gary-700 min-h-full w-80 p-4">
               {/* Sidebar content here */}
-              <li><a href="#item1"><MdEmojiEvents></MdEmojiEvents> Create An Auction</a></li>
-             
+              <li>
+                <Link to="/create_auction">
+                  <MdEmojiEvents /> Create An Auction
+                </Link>
+              </li>
 
-              <hr className='my-5 border-1  border-[#141b41]' />
-              <li><a href="#item1"><GiNewspaper></GiNewspaper> Sports News</a></li>
-              <li><a href="#item1"><LuTvMinimalPlay></LuTvMinimalPlay> Sports Videos</a></li>
+              <hr className="my-5 border-1 border-[#141b41]" />
 
-              <hr className='my-5 border-1  border-[#141b41]' />
-              {user && <li><a onClick={handleLogout}>Sign Out</a></li>}
-            </ul>
-          </div>
+              <li>
+                <Link to="/">
+                  <IoIosHome></IoIosHome> Home
+                </Link>
+              </li>
+              
+              <li>
+                <Link to="/sports_news">
+                  <GiNewspaper /> Sports News
+                </Link>
+              </li>
+
+              <li>
+                <Link to="/sports_videos">
+                <LuTvMinimalPlay /> Sports Videos
+                </Link>
+              </li>
+              <li>
+                <Link to="/contact">
+                  <IoIosMail></IoIosMail> Contact
+                </Link>
+              </li>
+              <li>
+                <Link to="/services">
+                  <MdMiscellaneousServices></MdMiscellaneousServices> Services
+                </Link>
+              </li>
+              <li>
+                <Link to="/about_us">
+                  <BsInfoSquare></BsInfoSquare> About Us
+                </Link>
+              </li>
+            
+            <hr className='my-5 border-1  border-[#141b41]' />
+            {user && <li><a onClick={handleLogout}>Sign Out</a></li>}
+          </ul>
         </div>
       </div>
+    </div >
+      <Footer></Footer>
     </>
   );
 }
