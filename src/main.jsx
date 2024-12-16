@@ -21,7 +21,7 @@ ReactDOM.createRoot(root).render(
   <AuthProvider>
     <BrowserRouter>
       <Routes>
-        <Route path="/auction/:auction_id/team_auction_screen/:team_id" element={<SidebarLess></SidebarLess>}>
+        <Route path="/auction/:auction_id/team_auction_screen/:team_id/:index" element={<SidebarLess></SidebarLess>}>
         </Route>
         <Route path="/" element={<App></App>}>
           <Route index element={<Home />} />

@@ -195,7 +195,7 @@ export default function AuctionCard({ auction }) {
                 </Link>
               )}
               <Link
-                  to={`/auction/${auction.$id}/team_auction_screen/${team_acction_queue[(auction.current_team_index==null)? 0: auction.current_team_index]}`}
+                  to={`/auction/${auction.$id}/team_auction_screen/${team_acction_queue[0]}/0`}
                   className="btn text-white theme-btn bg-gradient-to-r from-cyan-500 to-blue-500 rounded-md text-lg uppercase"
                 >
                   Team Auction
