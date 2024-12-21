@@ -1,5 +1,6 @@
-import React, { useState, useContext, useRef } from "react";
-import AuthContext from "../Apprwite/AuthProvider";
+import React, { useState, useRef } from "react";
+import authService from "../Apprwite/aurh";
+import "../app.css";
 
 export default function Registration() {
   const [name, setName] = useState("");
@@ -12,8 +13,6 @@ export default function Registration() {
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
 
-  const { signup } = useContext(AuthContext);
-
   const handleRegister = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -21,13 +20,11 @@ export default function Registration() {
     setSuccess("");
 
     try {
-      await signup(email, password, name);
+      await authService.createAccount({email, password, name});
       setSuccess("Account created successfully! Redirecting to login...");
       setTimeout(() => (window.location.href = "/login"), 2000);
     } catch (err) {
       console.error("Registration error:", err);
-
-      // Map errors to fields
       if (err.message.includes("email")) {
         setError((prev) => ({ ...prev, email: "Invalid email address." }));
         emailRef.current.focus();
@@ -46,19 +43,17 @@ export default function Registration() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 bg-white shadow-lg rounded-lg">
+    <div className="flex justify-center items-center min-h-screen bg-blue-200">
+      <div className="w-full max-w-md p-8 bg-white shadow-md rounded-md">
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
           Register
         </h2>
 
-        {/* General Error */}
         {error.general && (
           <div className="mb-4 text-red-500 text-sm" aria-live="assertive">
             {error.general}
           </div>
         )}
-        {/* Success Message */}
         {success && (
           <div className="mb-4 text-green-500 text-sm" aria-live="polite">
             {success}
@@ -66,12 +61,8 @@ export default function Registration() {
         )}
 
         <form onSubmit={handleRegister}>
-          {/* Full Name */}
           <div className="mb-4">
-            <label
-              className="block text-sm font-medium text-gray-700 mb-2"
-              htmlFor="name"
-            >
+            <label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="name">
               Full Name
             </label>
             <input
@@ -79,18 +70,14 @@ export default function Registration() {
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="input input-bordered w-full"
+              className="theme-input"
               placeholder="Enter your full name"
               required
             />
           </div>
 
-          {/* Email Address */}
           <div className="mb-4">
-            <label
-              className="block text-sm font-medium text-gray-700 mb-2"
-              htmlFor="email"
-            >
+            <label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="email">
               Email Address
             </label>
             <input
@@ -99,23 +86,15 @@ export default function Registration() {
               ref={emailRef}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className={`input input-bordered w-full ${
-                error.email ? "border-red-500" : ""
-              }`}
+              className={`theme-input ${error.email ? "border-red-500" : ""}`}
               placeholder="Enter your email"
               required
             />
-            {error.email && (
-              <p className="text-red-500 text-xs mt-1">{error.email}</p>
-            )}
+            {error.email && <p className="text-red-500 text-xs mt-1">{error.email}</p>}
           </div>
 
-          {/* Password */}
           <div className="mb-4">
-            <label
-              className="block text-sm font-medium text-gray-700 mb-2"
-              htmlFor="password"
-            >
+            <label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="password">
               Password
             </label>
             <input
@@ -124,34 +103,21 @@ export default function Registration() {
               ref={passwordRef}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className={`input input-bordered w-full ${
-                error.password ? "border-red-500" : ""
-              }`}
+              className={`theme-input ${error.password ? "border-red-500" : ""}`}
               placeholder="Enter a password"
               minLength="8"
               required
             />
-            <p className="text-xs text-gray-500 mt-1">
-              Password must be at least 8 characters.
-            </p>
-            {error.password && (
-              <p className="text-red-500 text-xs mt-1">{error.password}</p>
-            )}
+            {error.password && <p className="text-red-500 text-xs mt-1">{error.password}</p>}
           </div>
 
-          {/* Submit Button */}
           <div className="mb-6">
-            <button
-              type="submit"
-              className={`btn btn-primary w-full ${loading ? "loading" : ""}`}
-              disabled={loading}
-            >
+            <button type="submit" className={`theme-button ${loading ? "opacity-50" : ""}`} disabled={loading}>
               {loading ? "Registering..." : "Register"}
             </button>
           </div>
         </form>
 
-        {/* Redirect to Login */}
         <div className="text-center">
           <p className="text-sm text-gray-600">
             Already have an account?{" "}

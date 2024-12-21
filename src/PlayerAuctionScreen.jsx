@@ -8,17 +8,17 @@ import AuthContext from "./Apprwite/AuthProvider";
 import { TbLivePhotoFilled } from "react-icons/tb";
 import CountdownTimer from "./component/CountdownTimer";
 
-import { FaAnglesLeft,FaAnglesRight } from "react-icons/fa6";
+import { FaAnglesLeft, FaAnglesRight } from "react-icons/fa6";
 export default function PlayerAuctionScreen() {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const params = useParams();
- 
+
 
   const player_id = params.player_id;
   const auction_id = params.auction_id;
   const index = parseInt(params.index);
-  console.log("current player id",params);
+  console.log("current player id", params);
 
   const [current_player, setCurrentPlayer] = useState(null);
   const [auctionData, setAuctionData] = useState(null);
@@ -61,6 +61,23 @@ export default function PlayerAuctionScreen() {
     fetchAuction();
   }, [auction_id]);
 
+  useEffect(() => {
+    const fetchAuction = async () => {
+      try {
+        const auctionData = await databaseService.getDocument(
+          conf.appwriteAuctionId,
+          auction_id
+        );
+        setAuctionData(auctionData);
+      } catch (error) {
+        console.error("Error fetching auction data:", error.message);
+      } finally {
+        setLoadingAuction(false);
+      }
+    };
+    fetchAuction();
+  }, [auction_id]);
+
 
 
   const calculateRemainingTime = (ending_time) => {
@@ -75,7 +92,7 @@ export default function PlayerAuctionScreen() {
     return <div>Loading...</div>;
   }
 
-  console.log(current_player,"My current Player")
+ 
   // Handle bidding
   const handleBid = async (e) => {
     e.preventDefault();
@@ -136,202 +153,241 @@ export default function PlayerAuctionScreen() {
   };
 
 
-  
- 
 
+
+
+
+  const auctionEndingTime = new Date(auctionData?.player_auction_date);
+  auctionEndingTime.setMinutes(auctionEndingTime.getMinutes() + 2 * (index + 1));
+  const auctionEndingTimeIso = auctionEndingTime.toISOString();
   
-  const auctionEndingTime= new Date(auctionData?.player_auction_date);
-  auctionEndingTime.setMinutes(auctionEndingTime.getMinutes()+2*(index+1));
-  const auctionEndingTimeIso= auctionEndingTime.toISOString();
-  
-  if(calculateRemainingTime(auctionEndingTimeIso)===0){
-    if(current_player?.manager_name){
-      //update team and update manager 
-      playerObj={
-        isSold:true,
-      }
-      const updatePlayer= async()=>{
-        const player= await databaseService.updateDocument(databaseService.appwritePlayerId,player_id,playerObj);
+   
+  if (calculateRemainingTime(auctionEndingTimeIso) === 0) {
+    const updatePlayer = async (playerId, playerObj) => {
+      try {
+        const player = await databaseService.updateDocument(
+          conf.appwritePlayerId, 
+          playerId, 
+          playerObj
+        );
         setCurrentPlayer(player);
+        console.log("Player updated successfully:", player);
+      } catch (error) {
+        console.error("Error updating player:", error);
       }
-      updatePlayer();
-      /*member update
-      managerObj={
-        is_sold:true,
-      }
-      const updateManager= async()=>{
-        const manager= await databaseService.updateDocument(appwriteTeamId,current_player.manager_id,managerObj);
-      }
-      updateManager(); */
-    }else{
-      playerObj={
-        isUnSold:true,
-      }
-      const updatePlayer= async()=>{
-        const player= await databaseService.updateDocument(appwritePlayerId,current_player,playerObj);
-        setCurrentPlayer(player);
-      }
-      updatePlayer();
-
-
+    };
+  
+    if (current_player?.manager_name) {
+      console.log("test");
+  
+      const playerObj = {
+        isSold: true,
+        isUnSold: false,
+      };
+  
+      updatePlayer(player_id, playerObj);
+  
+      // Uncomment and use if manager update logic is required
+      /*
+      const managerObj = { is_sold: true };
+  
+      const updateManager = async () => {
+        try {
+          const manager = await databaseService.updateDocument(
+            conf.appwriteTeamId, 
+            current_player.manager_id, 
+            managerObj
+          );
+          console.log("Manager updated successfully:", manager);
+        } catch (error) {
+          console.error("Error updating manager:", error);
+        }
+      };
+  
+      updateManager();
+      */
+    } else {
+      const playerObj = {
+        isUnSold: true,
+        isSold:false,
+      };
+  
+      updatePlayer(player_id, playerObj);
     }
   }
+  if(calculateRemainingTime(auctionData?.player_auction_date)>0){
+   
+    return (<>
+    <div className="bg-slate-100 flex items-center justify-center w-full h-screen">
+     
+     <div>
+     <h2>Player Auction Will Start in...</h2>
+    <CountdownTimer deadlineDate={auctionData?.player_auction_date}></CountdownTimer>
 
+     </div>
+     </div>
+    </>)
+  }
   return (
     <div>
-      <div className="header-warp fixed top-0 left-0 w-full bg-white text-gray z-50 shadow-md backdrop-blur-sm">
-        <Header />
-      </div>
-      <div className="mt-20 container w-full md:w-8/12 mx-auto bg-white text-gray shadow-md">
-  <section className="grid md:grid-cols-2 gap-5 p-5">
-    {/* Team Image Section */}
-    <div className="flex justify-center items-center">
-      <img
-        className="auction-image w-9/12 rounded-md shadow-md border p-5 h-auto hover:border-red-500 hover:scale-105 hover:shadow-lg transition-transform duration-500 ease-in-out"
-        src={current_player?.photo_url|| "/placeholder.jpg"}
-        alt={current_player?.team_name || "player Logo"}
-      />
-    </div>
 
-    {/* Auction Data Section */}
-    <div className="auction-data">
-      {/* Player Name */}
-  <h3 className="font-inter font-bold text-[#141B41] text-3xl mb-2 ">
-    {current_player?.name || "Team Name"}
-  </h3>
-
-  {/* Auction Name */}
-  <p className="text-gray-600 font-inter text-sm">
-    {auctionData?.auction_name || "Auction Name"}
-  </p>
-
-  
-  {/* Player Details */}
-  <div className="mt-4 space-y-2">
-    <p className="text-lg">
-      <span className="font-bold">Age:</span> {current_player?.age || "N/A"}
-    </p>
-    <p className="text-lg">
-      <span className="font-bold">Position:</span> {current_player?.position || "N/A"}
-    </p>
-    <p className="text-lg">
-      <span className="font-bold">Category:</span> Gold
-    </p>
-  </div>
-
-      <hr />
-{/* Price Information */}
-      <div className="price my-5">
-        <button className="btn btn-sm bg-yellow-300">
-          Base Price | {current_player?.min_price || "N/A"} Points
-        </button>
-        <button className="btn btn-sm bg-yellow-300 mx-5">
-          Current Price | {current_player?.current_price || "N/A"} Points
-        </button>
-      </div>
-
-      <hr />
-      {/* Auction Countdown and Bid Form */}
-      <div className="auction-header my-5 flex flex-col md:flex-row gap-5">
-        <div>
-          <p className="text-sm text-gray-500 inter mb-2">Auction Ending In</p>
-          <CountdownTimer deadlineDate={auctionEndingTimeIso}></CountdownTimer>
-        </div>
-        <div>
-          <div className="flex  justify-center mt-6 items-center">
-          <form
-            onSubmit={handleBid}
-            className="flex items-center gap-3 mt-6"
-          >
-            <input
-              name="price"
-              className="input w-24 input-bordered"
-              type="number"
-              min={current_player?.current_price + 1 || 0}
-              placeholder="Enter Bid"
-              required
-              aria-label="Enter your bid"
+      <div className="mt-20 bg-slate-100 mx-20 text-gray shadow-md">
+        <section className="grid md:grid-cols-2 gap-5 p-5">
+          {/* Team Image Section */}
+          <div className="flex justify-center items-center">
+            <img
+              className="auction-image w-9/12 rounded-md shadow-md border p-5 h-auto hover:border-red-500 hover:scale-105 hover:shadow-lg transition-transform duration-500 ease-in-out"
+              src={current_player?.photo_url || "/placeholder.jpg"}
+              alt={current_player?.team_name || "player Logo"}
             />
-            <button
-              disabled={(current_player?.isSold ?? true) || (current_player?.isUnSold ?? true)}
-              type="submit"
-              className="btn bg-[#306BAC] hover:bg-[#3d85d2] text-gray-200"
-            >
-              Place A Bid
-            </button>
-          </form>
           </div>
-        </div>
+
+          {/* Auction Data Section */}
+          <div className="auction-data">
+            {/* Player Name */}
+            <h3 className="font-inter font-bold text-[#141B41] text-3xl mb-2 ">
+              {current_player?.name || "Team Name"}
+            </h3>
+
+            {/* Auction Name */}
+            <p className="text-gray-600 font-inter text-sm">
+              {auctionData?.auction_name || "Auction Name"}
+            </p>
+
+
+            {/* Player Details */}
+            <div className="my-4 space-y-1 text-gray-600 inter">
+              <p className="text-sm">
+                <span className="font-bold">Age:</span> {current_player?.age || "N/A"}
+              </p>
+              <p className="text-sm">
+                <span className="font-bold">Position:</span> {current_player?.position || "N/A"}
+              </p>
+              <p className="text-sm">
+                <span className="font-bold">Category:</span> Gold
+              </p>
+            </div>
+
+            <hr />
+            {/* Price Information */}
+            <div className="price my-5">
+              <button className="btn btn-sm bg-yellow-300">
+                Base Price | {current_player?.base_price || "N/A"} Points
+              </button>
+              <button className="btn btn-sm bg-yellow-300 mx-5">
+                Current Price | {current_player?.current_price || "N/A"} Points
+              </button>
+            </div>
+
+            <hr />
+            {/* Auction Countdown and Bid Form */}
+            <div className="auction-header my-5 flex flex-col md:flex-row gap-5">
+              <div>
+                <p className="text-sm text-gray-500 inter mb-2">Auction Ending In</p>
+                <CountdownTimer deadlineDate={auctionEndingTimeIso}></CountdownTimer>
+              </div>
+              <div>
+                <div className="flex  justify-center mt-6 items-center">
+                  <form
+                    onSubmit={handleBid}
+                    className="flex items-center gap-3 mt-6"
+                  >
+                    <input
+                      name="price"
+                      className="theme-input"
+                      type="number"
+                      min={current_player?.current_price + 1 || 0}
+                      placeholder="Enter Bid"
+                      required
+                      aria-label="Enter your bid"
+                    />
+                    <button
+                      disabled={(current_player?.isSold ?? true) || (current_player?.isUnSold ?? true)}
+                      type="submit"
+                      className="theme-button"
+                    >
+                      Place A Bid
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <hr />
+
+            {/* Last Bid Information */}
+            <div className="my-5">
+              <p className="text-sm text-gray-500 inter mb-2">Last Bid</p>
+              <p className="text-xs text-gray-500 inter">
+                {current_player?.manager_name || "No Bids Yet"} at{" "}
+                {current_player?.time_queue?.[0]
+                  ? new Date(current_player.time_queue[0]).toLocaleString()
+                  : "N/A"}
+              </p>
+            </div>
+
+            {/* Previous and Next Buttons */}
+
+            <div className="flex justify-end gap-5 mt-5">
+              <Link className="btn btn-sm btn-neutral btn-outline"
+                to={`/auction/${auction_id}/player_auction_screen/${auctionData?.player_queue_id[(index - 1 + auctionData?.player_queue_id.length) % auctionData?.player_queue_id.length]}/${(index - 1 + auctionData?.player_queue_id.length) % auctionData?.player_queue_id.length}`}>
+
+                <FaAnglesLeft></FaAnglesLeft>
+              </Link>
+
+              <Link
+                className="btn btn-sm btn-neutral btn-outline"
+                to={`/auction/${auction_id}/player_auction_screen/${auctionData?.player_queue_id[(index + 1) % auctionData?.player_queue_id.length]}/${(index + 1) % auctionData?.player_queue_id.length}`}>
+                <FaAnglesRight></FaAnglesRight>
+              </Link>
+            </div>
+          </div>
+        </section>
       </div>
 
-      <hr />
-
-      {/* Last Bid Information */}
-      <div className="my-5">
-        <p className="text-sm text-gray-500 inter mb-2">Last Bid</p>
-        <p className="text-xs text-gray-500 inter">
-          {current_player?.manager_name || "No Bids Yet"} at{" "}
-          {current_player?.time_queue?.[0]
-            ? new Date(current_player.time_queue[0]).toLocaleString()
-            : "N/A"}
-        </p>
-      </div>
-
-      {/* Previous and Next Buttons */}
-      
-      <div className="flex justify-end gap-5 mt-5">
-      <Link className="btn btn-sm btn-neutral btn-outline"
-  to={`/auction/${auction_id}/player_auction_screen/${auctionData?.player_queue_id[(index - 1 + auctionData?.player_queue_id.length) % auctionData?.player_queue_id.length]}/${(index - 1 + auctionData?.player_queue_id.length) % auctionData?.player_queue_id.length}`}>
-
-    <FaAnglesLeft></FaAnglesLeft>
-</Link>
-
-<Link
-  className="btn btn-sm btn-neutral btn-outline"
-  to={`/auction/${auction_id}/player_auction_screen/${auctionData?.player_queue_id[(index + 1) % auctionData?.player_queue_id.length]}/${(index + 1) % auctionData?.player_queue_id.length}`}>
- <FaAnglesRight></FaAnglesRight>
-</Link>
-       </div>
-    </div>
-  </section>
-</div>
-
-      <div className="container p-10 my-10 w-8/12 mx-auto bg-white text-gray shadow-md">
-        <h3 className="uppercase inter semibold text-sm btn"><TbLivePhotoFilled className="inline text-red-500"></TbLivePhotoFilled> LIVE Auctions</h3>
-        <table className="table table-bordered table-striped my-5">
-          <thead className="table-dark">
-            <tr>
-              <th>#</th>
-              <th>Bidder Name</th>
-              <th>Bidding Time</th>
-              <th>Price</th>
-            </tr>
-          </thead>
-          <tbody>
-            {current_player && current_player.bid_queue.length > 0 ? (
-              current_player.bid_queue.map((bidder, index) => (
-                <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td>{bidder || "Unknown Bidder"}</td>
-                  <td>
-                    {current_player.time_queue[index]
-                      ? new Date(current_player.time_queue[index]).toLocaleString()
-                      : "N/A"}
-                  </td>
-                  <td>{current_player.price_queue[index]?.toLocaleString("en-US", { style: "currency", currency: "USD" }) || "N/A"}</td>
-                </tr>
-              ))
-            ) : (
+      <div className="container p-6 my-10 mx-auto bg-slate-100 text-gray shadow-md rounded-md max-w-full lg:max-w-6xl">
+        <h3 className="uppercase inter semibold text-sm flex items-center gap-2">
+          <TbLivePhotoFilled className="text-red-500" /> LIVE Auctions
+        </h3>
+        <div className="overflow-x-auto mt-5">
+          <table className="table-auto w-full text-left border-collapse">
+            <thead className="bg-gray-200">
               <tr>
-                <td colSpan="4" className="text-center">
-                  No bids have been placed yet.
-                </td>
+                <th className="px-4 py-2">#</th>
+                <th className="px-4 py-2">Bidder Name</th>
+                <th className="px-4 py-2">Bidding Time</th>
+                <th className="px-4 py-2">Price</th>
               </tr>
-            )}
-          </tbody>
-        </table>
-
-
+            </thead>
+            <tbody>
+              {current_player && current_player.bid_queue.length > 0 ? (
+                current_player.bid_queue.map((bidder, index) => (
+                  <tr key={index} className="border-b hover:bg-gray-100">
+                    <td className="px-4 py-2">{index + 1}</td>
+                    <td className="px-4 py-2">{bidder || "Unknown Bidder"}</td>
+                    <td className="px-4 py-2">
+                      {current_player.time_queue[index]
+                        ? new Date(current_player.time_queue[index]).toLocaleString()
+                        : "N/A"}
+                    </td>
+                    <td className="px-4 py-2">
+                      {current_player.price_queue[index]?.toLocaleString("en-US", {
+                        style: "currency",
+                        currency: "USD",
+                      }) || "N/A"}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="4" className="px-4 py-2 text-center text-gray-500">
+                    No bids have been placed yet.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

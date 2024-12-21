@@ -3,11 +3,13 @@ import { useNavigate } from "react-router";
 import conf from "../config/conf";
 import databaseService from "../Apprwite/database";
 import AuthContext from "../Apprwite/AuthProvider";
+import CopyableText from "./CopyableText";
 
 export default function AuctionForm() {
     const [error, setError] = useState("");
     const { user } = useContext(AuthContext); 
     const navigate = useNavigate();
+    const [displayKey,setDisplayKey]=useState(false);
 
     if (!user) {
         navigate("/login");
@@ -73,9 +75,10 @@ export default function AuctionForm() {
         try {
            
             const createdDoc = await databaseService.createDocument(conf.appwriteAuctionId, auctionData);
-            console.log("Auction created:", createdDoc);
+            setAuctionData(createdDoc);
+            setDisplayKey(true);
             alert("Auction created successfully!");
-            navigate("/"); 
+            
         } catch (error) {
             console.error("Error creating auction:", error);
             setError("Failed to create auction. Please try again.");
@@ -83,9 +86,23 @@ export default function AuctionForm() {
     };
 
     return (
-        <div className="flex justify-center p-10 -mt-10 items-center min-h-screen bg-gray-100">
-            <div className="w-full  p-8 bg-white shadow-md rounded-md">
-                <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">Create Auction</h2>
+        <div className="flex justify-center p-10 -mt-10 items-center min-h-screen bg-blue-200">
+            <div className="w-8/12 mt-20  p-8 bg-white shadow-md rounded-md">
+                <h2 className="text-3xl  font-bold text-center  text-gray-800 mb-6">Create Auction</h2>
+                <div className={(displayKey && auctionData.$id)?'my-5 block border border-gray-200 p-10 ': 'hidden'}>
+                   
+                   
+                   <div className=" my-5 border-l-4 p-5 bg-gray-200 border-gray-400">
+                   <h4>Instructions</h4>
+                   <p> Collect the text to join the auction</p>
+                   <p>Share this code with other who want to join the auction</p>
+                   </div>
+                    <CopyableText text={auctionData.$id}></CopyableText>
+                </div>
+                
+
+
+
                 {error && <div className="mb-4 text-red-500 text-sm">{error}</div>}
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">
@@ -93,7 +110,7 @@ export default function AuctionForm() {
                             Auction Name
                         </label>
                         <input
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#141B41]"
+                            className="theme-input"
               
                             type="text"
                             id="auction_name"
@@ -114,7 +131,7 @@ export default function AuctionForm() {
                             name="auction_detail"
                             value={auctionData.auction_detail}
                             onChange={handleChange}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#141B41]"
+                            className="theme-input"
                             placeholder="Enter auction details"
                         />
                     </div>
@@ -148,7 +165,7 @@ export default function AuctionForm() {
                             name="host_organization"
                             value={auctionData.host_organization}
                             onChange={handleChange}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#141B41]"
+                            className="theme-input"
                             placeholder="Host organization"
                         />
                     </div>
@@ -164,7 +181,7 @@ export default function AuctionForm() {
                             name="player_auction_date"
                             value={auctionData.player_auction_date}
                             onChange={handleChange}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#141B41]"
+                            className="theme-input"
               
                         />
                     </div>
@@ -179,7 +196,7 @@ export default function AuctionForm() {
                             name="registation_dedline"
                             value={auctionData.registation_dedline}
                             onChange={handleChange}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#141B41]"
+                            className="theme-input"
               
                         />
                     </div>
@@ -194,7 +211,7 @@ export default function AuctionForm() {
                             name="team_auction_date"
                             value={auctionData.team_auction_date}
                             onChange={handleChange}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#141B41]"
+                            className="theme-input"
               
                         />
                     </div>
@@ -210,7 +227,7 @@ export default function AuctionForm() {
                             name="cover_url"
                             value={auctionData.cover_url}
                             onChange={handleChange}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#141B41]"
+                            className="theme-input"
                             placeholder="Enter cover URL"
                         />
                     </div>
@@ -220,6 +237,9 @@ export default function AuctionForm() {
                     <button type="submit" className="bg-[#141B41] text-white font-medium py-2 px-6 rounded-lg hover:bg-[#0f1736] transition duration-200">
                         Create Auction
                     </button>
+
+
+                    
                 </form>
             </div>
         </div>

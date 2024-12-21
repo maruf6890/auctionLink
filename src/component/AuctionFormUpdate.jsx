@@ -8,9 +8,9 @@ export default function AuctionFormUpdate() {
     const [auctionData, setAuctionData] = useState(null); // Holds the fetched auction data
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(true); // Loading state
-    const { user } = useContext(AuthContext); 
+    const { user } = useContext(AuthContext);
     const navigate = useNavigate();
-    const { auction_id } = useParams(); 
+    const { auction_id } = useParams();
 
     // Redirect if not logged in
     useEffect(() => {
@@ -25,7 +25,7 @@ export default function AuctionFormUpdate() {
             try {
                 setLoading(true);
                 const data = await databaseService.getDocument(conf.appwriteAuctionId, auction_id);
-                setAuctionData(data); 
+                setAuctionData(data);
             } catch (err) {
                 console.error("Failed to fetch auction:", err);
                 setError("Failed to fetch auction data. Please try again.");
@@ -36,6 +36,17 @@ export default function AuctionFormUpdate() {
         fetchAuction();
     }, [auction_id]);
 
+
+    //get all category
+    const [categories, setCategories] = useState([]);
+
+    useEffect(() => {
+        fetch('/sports-category.json')
+            .then((res) => res.json())
+            .then((data) => setCategories(data))
+
+    }, []);
+    console.log(categories);
     // Handle input changes
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -59,6 +70,7 @@ export default function AuctionFormUpdate() {
             auction_name: e.target.auction_name.value,
             auction_detail: e.target.auction_detail.value,
             host_organization: e.target.host_organization.value,
+            category:e.target.category.value,
             player_auction_date: e.target.player_auction_date.value,
             team_auction_date: e.target.team_auction_date.value,
             registation_dedline: e.target.registation_dedline.value,
@@ -80,8 +92,8 @@ export default function AuctionFormUpdate() {
     }
 
     return (
-        <div className="flex justify-center p-10 items-center min-h-screen bg-gray-100">
-            <div className="w-full  p-8 bg-white shadow-md rounded-md">
+        <div className="flex justify-center p-10   items-center min-h-screen ">
+            <div className="w-full  p-8  shadow-md rounded-md">
                 <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">Update Auction</h2>
                 {error && <div className="mb-4 text-red-500 text-sm">{error}</div>}
                 <form onSubmit={handleSubmit}>
@@ -129,6 +141,28 @@ export default function AuctionFormUpdate() {
                             placeholder="Enter host organization"
                         />
                     </div>
+                    <div className="mb-4">
+                        <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">
+                            Sports Category
+                        </label>
+                        <select
+                            id="category"
+                            name="category"
+                            value={auctionData.category || ""}
+                            onChange={handleChange}
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#141B41] focus:outline-none"
+                        >
+                            <option value="" disabled>
+                                Select a sports category
+                            </option>
+                            {categories.map((category, index) => (
+                                <option key={index} value={category.key}>
+                                    {category.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
 
                     <div className="mb-4">
                         <label htmlFor="player_auction_date" className="block text-sm font-medium text-gray-700 mb-2">

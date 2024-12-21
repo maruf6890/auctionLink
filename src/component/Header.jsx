@@ -7,7 +7,7 @@ export default function Header() {
     const {user}= useContext(AuthContext);
    
     return (
-        <div className='container mx-auto max-w-screen-xl px-2'>
+        <div className='container'>
             <div className="navbar ">
                 <div className="navbar-start">
                     <div className="dropdown block md:hidden">
@@ -35,7 +35,7 @@ export default function Header() {
                     </div>
                     <a  id="text-[#141B41]" className=" pl-0  text-3xl ">Auction<span className=' bg-red p-1 border-2 border-slate-500 text-md rounded-sm ml-2'>Link</span></a>
                 </div>
-                <div className="navbar-center">
+                <div className="navbar-center ">
                     <label className="input input-bordered flex items-center gap-2">
                         <input type="text" className="grow" placeholder="Search" />
                         <svg

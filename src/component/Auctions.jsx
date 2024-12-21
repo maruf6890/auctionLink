@@ -3,9 +3,10 @@ import SectionTitle from './SectionTitle';
 import AuctionCard from './AuctionCard';
 import databaseService from '../Apprwite/database';
 import conf from '../config/conf';
+import { Query } from 'appwrite';
 
 
-export default function Auctions() {
+export default function Auctions({searchQu}) {
   const [auctions, setAuctions] = useState([]);
   const [loading, setLoading] = useState(true);
 

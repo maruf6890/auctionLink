@@ -1,8 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
-import CountdownTimer from "./CountdownTimer";
 import { Link, useNavigate } from "react-router";
-import { IoCreateOutline } from "react-icons/io5";
-
+import { IoMdCalendar } from "react-icons/io";
+import { LuMapPinned } from "react-icons/lu";
 import {
   MdOutlineKeyboardDoubleArrowDown,
   MdKeyboardDoubleArrowUp,
@@ -64,11 +63,6 @@ setIsExpanded((prevState) => !prevState);
         console.error("Error creating team:", error);
         setError("Failed to create team. Please try again.");
       }
-      
-      
-     
-  
-  
   }
 
   
@@ -166,27 +160,10 @@ setIsExpanded((prevState) => !prevState);
       <div className="auction-head  justify-between flex mb-5">
         <div className="">
         <h4 className="text-3xl font-semibold text-gray-800">{auction.auction_name}</h4>
-        <p className="text-sm font-regular">by - {auction.host_organization}</p>
-        </div>
-        <div className="flex gap-3">
+        <p >Organized by - {auction.host_organization} | Powerd by - Techhub </p>
+        <p className="text-xs inter font-bold text-slate-600"><IoMdCalendar className="inline"></IoMdCalendar> 9th December to 15 December ||  <LuMapPinned className="inline"></LuMapPinned>  Central Field Sust</p>
       
-      <Link
-        className="btn tooltip flex items-center  btn-sm"
-        data-tip="Create Team"
-        to={`/auction/${auction.$id}/create_team`}
-      >
-        Team +
-      </Link>
-      <Link
-        className="btn tooltip flex items-center  btn-sm"
-        data-tip="Update Auction"
-        to={`/auction/${auction.$id}/update_auction`}
-      >
-        <IoCreateOutline className="inline" />
-      </Link>
-  
-         </div>
-
+        </div>
       </div>
 
       {/* Auction Image */}
@@ -215,18 +192,18 @@ setIsExpanded((prevState) => !prevState);
             <div className="transition collapse-content">
               <p>{auction.auction_detail}</p>
               {/* Registration Deadline */}
-              <p className="my-5">Player Registration Deadline: {auction.registation_dedline}</p>
+              <p className="my-5">Registration Deadline: {auction.registation_dedline}</p>
               {!isDeadlineOver(auction.registation_dedline) ? (
                 <>
-                  <button
+                  <a
                     onClick={handleTeamRequest}
-                    className="btn text-white theme-btn bg-gradient-to-r from-cyan-500 to-blue-500 rounded-md text-lg uppercase"
+                    className="theme-button"
                   >
                     Team Request
-                  </button>
+                  </a>
                   <Link
                     to={`/auction/${auction.$id}/player_application`}
-                    className="btn ml-5 text-white theme-btn bg-gradient-to-r from-cyan-500 to-blue-500 rounded-md text-lg uppercase"
+                    className="theme-button ml-5 uppercase"
                   >
                     Player Registration
                   </Link>
@@ -235,65 +212,9 @@ setIsExpanded((prevState) => !prevState);
                 <p>Registration is over</p>
               )}
 
-              {/* Team Auction */}
-              <p className="my-5">Team Auction Date: {teamAuctionTime}</p>
-              {!isDeadlineOver(auction.team_auction_date) ? (
-                <CountdownTimer deadlineDate={auction.team_auction_date} />
-              ) : (
-                <Link
-                  to={`/auction/${auction.$id}/auction_screen/${team_acction_queue[auction.current_team_index]}`}
-                  className="btn text-white theme-btn bg-gradient-to-r from-cyan-500 to-blue-500 rounded-md text-lg uppercase"
-                >
-                  Team Auction
-                </Link>
-              )}
-              <Link
-                  to={`/auction/${auction.$id}/team_auction_screen/${team_acction_queue[0]}/0`}
-                  className="btn text-white theme-btn bg-gradient-to-r from-cyan-500 to-blue-500 rounded-md text-lg uppercase"
-                >
-                  Team Auction
-                </Link>
-              {/* Player Auction */}
-              <p className="my-5">Player Auction Date: {playerAuctionTime}</p>
-              {!isDeadlineOver(auction.player_auction_date) ? (
-                <CountdownTimer deadlineDate={auction.player_auction_date} />
-              ) : (
-                <Link
-                  to={`/auction/${auction.auction_id}/player_auction_screen`}
-                  className="btn text-white theme-btn bg-gradient-to-r from-cyan-500 to-blue-500 rounded-md text-lg uppercase"
-                >
-                  Player Auction
-                </Link>
-              )}
-              <Link
-                  to={`/auction/${auction.$id}/player_auction_screen/${player_auction_queue[0]}/0`}
-                  className="btn text-white theme-btn bg-gradient-to-r from-cyan-500 to-blue-500 rounded-md text-lg uppercase"
-                >
-                  Player Auction
-                </Link>
+             
 
-              {/* Total Teams */}
-              <div className="mt-5">
-                <h5 className="text-lg font-bold">Total Teams:</h5>
-                <p className="text-gray-700">{auction.total_team}</p>
-              </div>
-
-              {/* Auction Status */}
-              <div className="mt-5">
-                <h5 className="text-lg font-bold">Auction Status:</h5>
-                <ul className="steps steps-vertical lg:steps-horizontal ml-5">
-                  <li className={auction.application_done ? "step step-primary" : "step"}>
-                    Application
-                  </li>
-                  <li className={auction.team_bidding_done ? "step step-primary" : "step"}>
-                    Team Bidding
-                  </li>
-                  <li className={auction.player_bidding_done ? "step step-primary" : "step"}>
-                    Player Bidding
-                  </li>
-                  <li className={auction.closed ? "step step-primary" : "step"}>Closed</li>
-                </ul>
-              </div>
+           
             </div>
           )}
         </div>

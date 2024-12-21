@@ -52,7 +52,7 @@ export default function TeamAddForm() {
     };
 
     return (
-        <div className="flex justify-center p-10 -mt-10 items-center min-h-screen bg-gray-100">
+        <div className="flex justify-center  px-20 bg-slate-100 items-center min-h-screen ">
             <div className="w-full  p-8 bg-white shadow-md rounded-lg">
                 <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">Add Team</h2>
                 {error && <div className="mb-4 text-red-500 text-sm">{error}</div>}

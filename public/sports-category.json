@@ -1,0 +1,22 @@
+[
+  { "name": "Football (Soccer)", "key": "football-soccer" },
+  { "name": "Cricket", "key": "cricket" },
+  { "name": "Basketball", "key": "basketball" },
+  { "name": "Baseball", "key": "baseball" },
+  { "name": "Ice Hockey", "key": "ice-hockey" },
+  { "name": "Tennis", "key": "tennis" },
+  { "name": "Rugby", "key": "rugby" },
+  { "name": "Formula 1 Racing", "key": "formula-1-racing" },
+  { "name": "Volleyball", "key": "volleyball" },
+  { "name": "Golf", "key": "golf" },
+  { "name": "Wrestling (WWE)", "key": "wrestling-wwe" },
+  { "name": "E-Sports", "key": "e-sports" },
+  { "name": "American Football", "key": "american-football" },
+  { "name": "Badminton", "key": "badminton" },
+  { "name": "Boxing", "key": "boxing" },
+  { "name": "Mixed Martial Arts (MMA)", "key": "mixed-martial-arts" },
+  { "name": "Tour de France (Cycling)", "key": "tour-de-france" },
+  { "name": "IndyCar Racing", "key": "indycar-racing" },
+  { "name": "Pro Kabaddi", "key": "pro-kabaddi" },
+  { "name": "Rally Racing", "key": "rally-racing" }
+]
