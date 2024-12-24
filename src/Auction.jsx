@@ -14,6 +14,7 @@ import { AiOutlineUsergroupAdd } from "react-icons/ai";
 import { NavLink, Outlet, useParams } from 'react-router';
 import databaseService from './Apprwite/database';
 import conf from './config/conf';
+import './app.css';
 const Auction = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const {auction_id}= useParams();
