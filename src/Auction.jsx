@@ -79,7 +79,7 @@ const Auction = () => {
           } flex flex-col`}
         >
           <nav className="flex-grow mt-4 pt-14 space-y-2  auction-menu">
-            <NavLink to="/home" className="flex items-center p-3 text-sm hover:bg-slate-300 hover:border-l-4 border-[#141B41] hover:border-l-4 border-[#141B41] transition-all">
+            <NavLink to="/" className="flex items-center p-3 text-sm hover:bg-slate-300 hover:border-l-4 border-[#141B41] hover:border-l-4 border-[#141B41] transition-all">
               <span className="material-icons text-xl"><IoHome></IoHome></span>
               {menuOpen && <span className="ml-3">Home</span>}
             </NavLink>
