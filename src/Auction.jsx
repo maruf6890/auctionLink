@@ -52,6 +52,7 @@ const Auction = () => {
   if (!auctionData) {
     return <p>No auction data available.</p>; // Handle case with no data
   }
+  console.log("MY Auctioon", auctionData);
   return (
     <>
       {/* Header */}

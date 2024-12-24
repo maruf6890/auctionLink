@@ -14,7 +14,7 @@ export default function AuctionDetails() {
   const [auctionData, setAuctionData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [teamAuctionQueue, setTeamAuctionQueue] = useState([]);
+  const [playerAuctionQueue, setPlayerAuctionQueue] = useState([]);
   const { user } = useContext(AuthContext);
 
   // Fetch auction details
@@ -35,32 +35,32 @@ export default function AuctionDetails() {
     fetchAuction();
   }, [auction_id]);
 
-  // Fetch team queue
+  // Fetch player queue
   useEffect(() => {
     if (!auctionData || !auctionData.$id) return;
 
-    const fetchTeamQueue = async () => {
+    const fetchPlayerQueue = async () => {
       try {
         const queries = [Query.equal("auction_id", auctionData.$id)];
-        const data = await databaseService.getDocuments(conf.appwriteTeamId, queries);
-        setTeamAuctionQueue(data);
+        const data = await databaseService.getDocuments(conf.appwritePlayerId, queries);
+        setPlayerAuctionQueue(data);
       } catch (error) {
         console.error("Failed to fetch team auction queue:", error);
       }
     };
 
-    fetchTeamQueue();
+    fetchPlayerQueue();
   }, [auctionData]);
 
   // Update auction queue
   useEffect(() => {
-    if (!auctionData || teamAuctionQueue.length === 0) return;
+    if (!auctionData || playerAuctionQueue.length === 0) return;
 
     const updateQueue = async () => {
-      const teamQueueIds = teamAuctionQueue.map((item) => item.$id);
+      const playerQueueIds = playerAuctionQueue.map((item) => item.$id);
       const updateData = {
-        team_queue_id: teamQueueIds,
-        total_team: teamQueueIds.length,
+        player_queue_id: playerQueueIds,
+        total_player: playerQueueIds.length,
       };
 
       try {
@@ -76,7 +76,7 @@ export default function AuctionDetails() {
     };
 
     updateQueue();
-  }, [teamAuctionQueue]);
+  }, [playerAuctionQueue]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;

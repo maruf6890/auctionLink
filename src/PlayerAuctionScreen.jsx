@@ -250,6 +250,7 @@ export default function PlayerAuctionScreen() {
 
           //update manager point after a bid
           const managerUpdate= await databaseService.updateDocument(conf.appwriteManagerId,current_player?.manager_id,{my_point:managerUpdatedPoint})
+          setCurrentManager([mananager])
         } catch (error) {
           setLoadingPlayer(true);
           console.log("Error updateing the team, ",error );
@@ -452,6 +453,7 @@ export default function PlayerAuctionScreen() {
           </table>
         </div>
       </div>
+      <div className="rounded-md  p-2 text-center bg-yellow-500  absolute bottom-0 right-0"><h3 className="text-xs">Your Current Point</h3>  <span className="text-xl block">{currenManager?.[0]?.my_point}</span></div>
     </div>
   );
 }
