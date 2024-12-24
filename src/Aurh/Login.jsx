@@ -1,7 +1,7 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router";
 import AuthContext from "../Apprwite/AuthProvider";
-import '../../app.css';
+import '../app.css';
 export default function LoginPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
