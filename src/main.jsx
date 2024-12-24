@@ -12,7 +12,7 @@ import { useState } from 'react';
 import { AuthProvider } from './Apprwite/AuthProvider';
 import AuctionForm from './component/AuctionForm';
 import TeamAddForm from './component/TeamAddForm';
-import SidebarLess from './SidebarLess';
+
 import PlayerAuctionScreen from './PlayerAuctionScreen';
 import AboutUs from './component/AboutUs';
 import Services from './component/Services';
@@ -44,8 +44,8 @@ ReactDOM.createRoot(root).render(
          <Route path="/community/search/:q" element={<SearchAuctions></SearchAuctions>} />
          <Route path="/community/category/:category_key" element={<AuctionsCategory></AuctionsCategory>} />
       </Route>
-        <Route path="/auction/:auction_id/team_auction_screen/:team_id/:index" element={<SidebarLess></SidebarLess>}>
-        </Route>
+       
+    
         <Route path="/login" element={<LoginPage></LoginPage>} />
         <Route path="/create_auction" element={<AuctionForm></AuctionForm>} />
         <Route path="/registration" element={<Registration></Registration>} />

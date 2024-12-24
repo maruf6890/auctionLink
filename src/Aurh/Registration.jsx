@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import authService from "../Apprwite/aurh";
-import "../app.css";
+
 
 export default function Registration() {
   const [name, setName] = useState("");
