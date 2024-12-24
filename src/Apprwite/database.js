@@ -89,6 +89,8 @@ class DatabaseService {
                 documentId
             );
             console.log("Document deleted successfully");
+            console.log("Document deleted successfully");
+            return { success: true, message: "Document deleted successfully" };
         } catch (error) {
             console.error("Error deleting document:", error.message);
             throw error;

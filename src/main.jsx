@@ -25,6 +25,9 @@ import Community from './component/Community';
 import Auctions from './component/Auctions';
 import SearchAuctions from './component/AuctionsSearch';
 import AuctionsCategory from './component/AuctionsCategory';
+import PlayerList from './PlayerList';
+import PlayerFormUpdate from './component/PlayerFormUpdate';
+import ManagerList from './ManagerList';
 
 
 
@@ -53,6 +56,9 @@ ReactDOM.createRoot(root).render(
         <Route path="/auction/:auction_id/create_team" element={<TeamAddForm></TeamAddForm>} />
         <Route path="/auction/:auction_id/update_auction" element={<AuctionFormUpdate></AuctionFormUpdate>} />
         <Route path="/auction/:auction_id/player_registration" element={<PlayerForm></PlayerForm>} /> 
+        <Route path="/auction/:auction_id/player_list" element={<PlayerList></PlayerList>} />
+        <Route path="/auction/:auction_id/manager_list" element={<ManagerList></ManagerList>} />
+        <Route path="/auction/:auction_id/player_edit/:player_id" element={<PlayerFormUpdate></PlayerFormUpdate>} /> 
         <Route path="/auction/:auction_id/player_auction_screen/:player_id/:index" element={<PlayerAuctionScreen></PlayerAuctionScreen>}/>
         </Route>
       </Routes>

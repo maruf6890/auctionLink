@@ -96,14 +96,14 @@ const Auction = () => {
             </NavLink>
            
 
-            <NavLink  className="flex items-center p-3 text-sm hover:bg-slate-300 hover:border-l-4 border-[#141B41] transition-all">
+            <NavLink  to={`/auction/${auction_id}/player_list`} className="flex items-center p-3 text-sm hover:bg-slate-300 hover:border-l-4 border-[#141B41] transition-all">
               <span className="material-icons text-xl"><GiAmericanFootballPlayer></GiAmericanFootballPlayer></span>
               {menuOpen && <span className="ml-3">Player</span>}
             </NavLink>
-            <a href="#" className="flex items-center p-3 text-sm hover:bg-slate-300 hover:border-l-4 border-[#141B41] transition-all">
-              <span className="material-icons text-xl"><GiThorHammer></GiThorHammer></span>
-              {menuOpen && <span className="ml-3">Team Auction</span>}
-            </a>
+            <NavLink to={`/auction/${auction_id}/manager_list`}  className="flex items-center p-3 text-sm hover:bg-slate-300 hover:border-l-4 border-[#141B41] transition-all">
+              <span className="material-icons text-xl"><FaUserTie></FaUserTie></span>
+              {menuOpen && <span className="ml-3">Team Manager</span>}
+            </NavLink>
             <NavLink to={`/auction/${auction_id}/player_auction_screen/${auctionData?.player_queue_id[0]}/0`} className="flex items-center p-3 text-sm hover:bg-slate-300 hover:border-l-4 border-[#141B41] transition-all">
               <span className="material-icons text-xl"><GiThorHammer></GiThorHammer></span>
               {menuOpen && <span className="ml-3">Player Auction</span>}

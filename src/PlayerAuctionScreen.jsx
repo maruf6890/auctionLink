@@ -9,6 +9,7 @@ import { TbLivePhotoFilled } from "react-icons/tb";
 import CountdownTimer from "./component/CountdownTimer";
 
 import { FaAnglesLeft, FaAnglesRight } from "react-icons/fa6";
+import { Query } from "appwrite";
 export default function PlayerAuctionScreen() {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -21,9 +22,51 @@ export default function PlayerAuctionScreen() {
   console.log("current player id", params);
 
   const [current_player, setCurrentPlayer] = useState(null);
+  
   const [auctionData, setAuctionData] = useState(null);
+  const [currenManager,setCurrentManager]= useState(null);
+  const [userTeam,setUserTeam]= useState(null);
   const [loadingPlayer, setLoadingPlayer] = useState(true);
   const [loadingAuction, setLoadingAuction] = useState(true);
+
+
+  // Fetch current manager
+  useEffect(() => {
+    const fetch= async () => {
+      try {
+        const Data = await databaseService.getDocuments(
+          conf.appwriteManagerId, [Query.equal("email",user?.email),Query.equal("auction_id",auction_id)]
+        );
+        setCurrentManager(Data);
+      } catch (error) {
+        console.error("Error fetching manager data:", error.message);
+      } finally {
+        setLoadingPlayer(false);
+      }
+    };
+    fetch();
+  }, [user.email]);
+
+
+  useEffect(() => {
+  const fetch = async () => {
+    if (!currenManager?.[0]?.team_id) return;
+
+    try {
+      setLoadingPlayer(true); 
+      const Data = await databaseService.getDocument(conf.appwriteTeamId, currenManager[0].team_id);
+      setUserTeam(Data);
+    } catch (error) {
+      setLoadingPlayer(true);
+      console.error("Error fetching team data:", error.message);
+    } finally {
+      setLoadingPlayer(false); 
+    }
+  };
+
+  fetch();
+}, [currenManager]);
+
 
   // Fetch current player data
   useEffect(() => {
@@ -161,8 +204,10 @@ export default function PlayerAuctionScreen() {
   auctionEndingTime.setMinutes(auctionEndingTime.getMinutes() + 2 * (index + 1));
   const auctionEndingTimeIso = auctionEndingTime.toISOString();
   
-   
-  if (calculateRemainingTime(auctionEndingTimeIso) === 0) {
+ 
+  if (calculateRemainingTime(auctionEndingTimeIso)===0 && (current_player?.isSold==false && current_player?.isUnSold==false)) {
+    console.log("working with me");
+    
     const updatePlayer = async (playerId, playerObj) => {
       try {
         const player = await databaseService.updateDocument(
@@ -178,7 +223,7 @@ export default function PlayerAuctionScreen() {
     };
   
     if (current_player?.manager_name) {
-      console.log("test");
+      
   
       const playerObj = {
         isSold: true,
@@ -187,25 +232,37 @@ export default function PlayerAuctionScreen() {
   
       updatePlayer(player_id, playerObj);
   
-      // Uncomment and use if manager update logic is required
-      /*
-      const managerObj = { is_sold: true };
-  
-      const updateManager = async () => {
+      // update team if player is sold y
+      const playerList =[...userTeam?.players];
+      playerList.push(current_player?.$id);
+      const teamObj={
+        players:playerList,
+      }
+      const managerUpdatedPoint= currenManager[0]?.my_point-current_player?.current_price;
+      const update= async() => {
         try {
-          const manager = await databaseService.updateDocument(
-            conf.appwriteTeamId, 
-            current_player.manager_id, 
-            managerObj
-          );
-          console.log("Manager updated successfully:", manager);
+          setLoadingPlayer(true);
+
+          //update team for auction
+          const teamData=  await databaseService.updateDocument(conf.appwriteTeamId,userTeam?.$id,teamObj);
+          console.log("player updated successful");
+          setUserTeam(teamData);
+
+          //update manager point after a bid
+          const managerUpdate= await databaseService.updateDocument(conf.appwriteManagerId,current_player?.manager_id,{my_point:managerUpdatedPoint})
         } catch (error) {
-          console.error("Error updating manager:", error);
+          setLoadingPlayer(true);
+          console.log("Error updateing the team, ",error );
+        }finally{
+          setLoadingPlayer(false);
         }
-      };
-  
-      updateManager();
-      */
+      }
+      update();
+    
+      // reduce point of manager 
+
+
+      
     } else {
       const playerObj = {
         isUnSold: true,
@@ -214,7 +271,10 @@ export default function PlayerAuctionScreen() {
   
       updatePlayer(player_id, playerObj);
     }
+    
   }
+
+
   if(calculateRemainingTime(auctionData?.player_auction_date)>0){
    
     return (<>
@@ -228,6 +288,9 @@ export default function PlayerAuctionScreen() {
      </div>
     </>)
   }
+
+
+  console.log("team: ",userTeam);
   return (
     <div>
 
