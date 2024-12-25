@@ -61,7 +61,7 @@ const Auction = () => {
         <header className="  text-primary-content h-full  flex items-center justify-between px-4">
           <div className='flex'>
           <button className='text-2xl mr-3' onClick={() => setMenuOpen(!menuOpen)}><GrMenu></GrMenu></button>
-          <div className="text-2xl font-medium "> <a id="text-[#141B41]" className=" pl-0  text-2xl ">Auction<span className=' bg-red p-1 border-2 border-slate-500 text-md rounded-sm ml-2'>Link</span></a></div>
+          <div className="text-xl md:text-2xl font-medium "> <a id="text-[#141B41]" className=" pl-0  text-2xl ">Auction<span className=' bg-red p-1 border-2 border-slate-500 text-md rounded-sm ml-2'>Link</span></a></div>
           </div>
           
           <div className="">

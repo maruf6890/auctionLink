@@ -105,7 +105,7 @@ export default function AuctionDetails() {
       }
   }
   return (
-    <div className="mt-16 bg-slate-50 p-10">
+    <div className="mt-16 mx-auto max-w-6xl ml-2 lg:ml-0 bg-slate-50 p-10">
       <div className="">
         <div
           className="relative flex items-center justify-center py-16 bg-blue-950 border mb-5"
@@ -119,32 +119,32 @@ export default function AuctionDetails() {
           <img
             src={auctionData.cover_url}
             alt={auctionData.auction_name}
-            className="relative w-8/12 h-auto object-cover rounded"
+            className="relative w-10/12 md:w-8/12 h-auto object-cover rounded"
           />
         </div>
       </div>
-      <h1 className="text-4xl font-bold text-[#141B41] inter">
+      <h1 className="text-xl md:text-4xl font-bold text-[#141B41] inter">
         {auctionData.auction_name}
       </h1>
-      <p>
+      <p className="text-xs md:text-xs">
         Organized by <b>IICT SUST</b>, this event will take place on{" "}
         <b>December 25, 2024</b>, at <b>Sylhet, Bangladesh.</b>
       </p>
-      <hr className="my-5 border border-blue-200" />
-      <p className="my-5 text-xl">
+      <hr className="my-5 border text-sm border-blue-200" />
+      <p className="my-5 text-l md:text-xl">
         <strong className="">
           <TbListDetails className="inline text-blue-500"></TbListDetails> More
           About Auctions:
         </strong>
         <br /> 
       </p>
-      <p className="inter space-x-1 text-justify">{auctionData.auction_detail}</p>
+      <p className="inter space-x-1 text-sm md:text-l text-justify">{auctionData.auction_detail}</p>
       <p className="my-5 text-xl">
         <strong>
           <HiSpeakerphone className="inline text-blue-700"></HiSpeakerphone>{" "}
           Alert:
         </strong>{" "}
-        {auctionData.description}
+        
       </p>
       <div className="overflow-hidden">
         <table className="table border text-center">
@@ -186,10 +186,10 @@ export default function AuctionDetails() {
             <FaLink className="inline text-blue-700"></FaLink> Links:
           </strong>
         </p>
-        <Link to={`/auction/${auctionData.$id}/player_registration`} className="theme-button">
+        <Link to={`/auction/${auctionData.$id}/player_registration`} className="w-full md:w-auto text-center block md:inline mb-2 md:mb-0 theme-button">
           Player Registration
         </Link>
-        <a onClick={handleTeamRequest} className="theme-button ml-5">Request For Team</a>
+        <a onClick={handleTeamRequest} className="w-full md:w-auto block md:inline text-center theme-button md:ml-5">Request For Team</a>
       
     </div>
   );
